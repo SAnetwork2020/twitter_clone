@@ -15,6 +15,15 @@ final authControllerProvider =
     userAPI: ref.watch(userAPIProvider),
   );
 });
+final currentUserDetailsProvider = FutureProvider((ref) async {
+  final currentUserId = ref.watch(currentUserAccountProvider).value!.$id;
+  final userDetails = ref.watch(userDetailsProvider(currentUserId));
+  return userDetails.value;
+});
+final userDetailsProvider = FutureProvider.family((ref, String uid) {
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.getUserData(uid);
+});
 final currentUserAccountProvider = FutureProvider((ref) async {
   final authController = ref.watch(authControllerProvider.notifier);
   return authController.currentUser();
@@ -46,8 +55,8 @@ class AuthController extends StateNotifier<bool> {
     res.fold(
       (l) => showSnackBar(context, l.message),
       (r) async {
-         showSnackBar(context, "Account created! Please login");
-            Navigator.push(context, LoginView.route());
+        showSnackBar(context, "Account created! Please login");
+        Navigator.push(context, LoginView.route());
         UserModel userModel = UserModel(
           email: email,
           name: getNameFromEmail(email),
@@ -88,5 +97,11 @@ class AuthController extends StateNotifier<bool> {
         Navigator.push(context, HomeView.route());
       },
     );
+  }
+
+  Future<UserModel> getUserData(String uid) async {
+    final document = await _userAPI.getUserData(uid);
+    final updatedUser = UserModel.fromMap(document.data);
+    return updatedUser;
   }
 }
