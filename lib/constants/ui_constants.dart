@@ -20,8 +20,8 @@ class UIConstants {
   }
 
   static List<Widget> bottomTabBarPages = [
-    Text("Feed Screen"),
-    Text("Search Screen"),
-    Text("Notiification Screen"),
+    const Text("Feed Screen"),
+    const Text("Search Screen"),
+    const Text("Notiification Screen"),
   ];
 }

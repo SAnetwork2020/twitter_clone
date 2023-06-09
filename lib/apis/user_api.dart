@@ -33,7 +33,7 @@ class UserAPI implements IUserAPI {
       await _db.createDocument(
         databaseId: AppwriteConstants.databaseId,
         collectionId: AppwriteConstants.userCollectionId,
-        documentId: ID.unique(),
+        documentId: userModel.uid,
         data: userModel.toMap(),
       );
       return right(null);
@@ -55,11 +55,15 @@ class UserAPI implements IUserAPI {
   }
 
   @override
-  Future<Document> getUserData(String uid) {
-    return _db.getDocument(
+  Future<Document> getUserData(String uid) async {
+    print("Document resultId: ${uid}");
+    print("${_db.toString()}");
+    final result = _db.getDocument(
       databaseId: AppwriteConstants.databaseId,
       collectionId: AppwriteConstants.userCollectionId,
       documentId: uid,
     );
+
+    return result;
   }
 }

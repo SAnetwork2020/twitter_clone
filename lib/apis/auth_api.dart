@@ -1,6 +1,7 @@
 // import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+// import 'package:appwrite/models.dart' as model;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:twitter_clone/core/failure.dart';
@@ -39,7 +40,7 @@ class AuthAPI implements IAuthAPI {
       return await _account.get();
     } on AppwriteException {
       return null;
-    } catch (e ) {
+    } catch (e) {
       return null;
     }
   }

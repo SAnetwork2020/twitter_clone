@@ -17,11 +17,16 @@ final authControllerProvider =
 });
 final currentUserDetailsProvider = FutureProvider((ref) async {
   final currentUserId = ref.watch(currentUserAccountProvider).value!.$id;
+  // print("userID from currentUserDetailsProvider: $currentUserId");
   final userDetails = ref.watch(userDetailsProvider(currentUserId));
-  return userDetails.value;
+  // print(
+  //     "profilePic from currentUserDetailsProvider: ${userDetails.value?.profilePic}");
+  return userDetails.value!;
 });
-final userDetailsProvider = FutureProvider.family((ref, String uid) {
+final userDetailsProvider = FutureProvider.family((ref, String uid) async {
+  print("the userID 4rm userDetailsProvider: $uid");
   final authController = ref.watch(authControllerProvider.notifier);
+  // print("userDetailsProvider result: $authController");
   return authController.getUserData(uid);
 });
 final currentUserAccountProvider = FutureProvider((ref) async {
@@ -39,8 +44,14 @@ class AuthController extends StateNotifier<bool> {
         _userAPI = userAPI,
         super(false);
 
-  Future<User?> currentUser() => _authAPI.currentUserAccount();
+  Future<User?> currentUser() async {
+    final user = await _authAPI.currentUserAccount();
+    print("userID: ${user?.$id}");
+    // print("User value: ${user?.then((value) => value!.$id)}");
+    return user;
+  }
 
+//Sign Authentication
   Future<void> signUp({
     required String email,
     required String password,
@@ -62,10 +73,10 @@ class AuthController extends StateNotifier<bool> {
           name: getNameFromEmail(email),
           followers: const [],
           following: const [],
-          profilePic: "profilePic",
-          bannerPic: "bannerPic",
-          uid: "uid",
-          bio: "bio",
+          profilePic: "",
+          bannerPic: "",
+          uid: r.$id,
+          bio: "",
           isTwitterBlue: false,
         );
         final res2 = await _userAPI.saveUserData(userModel);
@@ -94,14 +105,18 @@ class AuthController extends StateNotifier<bool> {
     res.fold(
       (l) => showSnackBar(context, l.message),
       (r) {
+        print("This is logged in userID: ${r.userId}");
         Navigator.push(context, HomeView.route());
       },
     );
   }
 
   Future<UserModel> getUserData(String uid) async {
+    print("usermodelID: $uid");
     final document = await _userAPI.getUserData(uid);
+    print("userDocument: ${document.data}");
     final updatedUser = UserModel.fromMap(document.data);
+    print("UserModel.fromMap: ${updatedUser.profilePic}");
     return updatedUser;
   }
 }
