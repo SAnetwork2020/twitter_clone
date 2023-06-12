@@ -20,9 +20,12 @@ Future<List<File>> pickImages() async {
   final ImagePicker picker = ImagePicker();
   final imageFiles = await picker.pickMultiImage();
   if (imageFiles.isNotEmpty) {
+    print("List of imageFiles: ${imageFiles.length}");
     for (final image in imageFiles) {
       images.add(File(image.path));
     }
+
+    print("List of images: ${images.length}");
   }
   return images;
 }
