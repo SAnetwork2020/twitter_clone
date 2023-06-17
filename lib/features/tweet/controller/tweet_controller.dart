@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/apis/storage_api.dart';
 import 'package:twitter_clone/apis/tweet_api.dart';
 import 'package:twitter_clone/core/enums/tweet_type_enum.dart';
+import 'package:twitter_clone/core/providers.dart';
 import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
@@ -13,16 +15,31 @@ final tweetControllerProvider =
   return TweetController(
     ref: ref,
     tweetAPI: ref.watch(tweetAPIProvider),
+    storageAPI: ref.watch(storageAPIProvider),
   );
+});
+final getTweetsProvider = FutureProvider((ref) async {
+  final tweetController = ref.watch(tweetControllerProvider.notifier);
+  return tweetController.getTweets();
 });
 
 class TweetController extends StateNotifier<bool> {
   final TweetAPI _tweetAPI;
+  final StorageAPI _storageAPI;
   final Ref _ref;
-  TweetController({required Ref ref, required TweetAPI tweetAPI})
-      : _ref = ref,
+  TweetController({
+    required Ref ref,
+    required TweetAPI tweetAPI,
+    required StorageAPI storageAPI,
+  })  : _ref = ref,
         _tweetAPI = tweetAPI,
+        _storageAPI = storageAPI,
         super(false);
+
+  Future<List<Tweet>> getTweets() async {
+    final tweetList = await _tweetAPI.getTweets();
+    return tweetList.map((tweet) => Tweet.fromMap(tweet.data)).toList();
+  }
 
   void shareTweet({
     required List<File> images,
@@ -47,11 +64,37 @@ class TweetController extends StateNotifier<bool> {
     }
   }
 
-  void _shareImageTweet({
+  Future<void> _shareImageTweet({
     required List<File> images,
     required String text,
     required BuildContext context,
-  }) {}
+  }) async {
+    state = true;
+    final hashtags = _getHashtagsFromText(text);
+    String link = _getLinkFromText(text);
+    final user = _ref.read(currentUserDetailsProvider).value!;
+    final imagesLinks = await _storageAPI.uploadImage(images);
+    Tweet tweet = Tweet(
+      text: text,
+      hashtags: hashtags,
+      link: link,
+      imageLinks: imagesLinks,
+      uid: user.uid,
+      tweetType: TweetType.image,
+      tweetedAt: DateTime.now(),
+      likes: const [],
+      commentIds: const [],
+      id: "",
+      reshareCount: 0,
+    );
+    final res = await _tweetAPI.shareTweet(tweet);
+    state = false;
+    res.fold(
+      (l) => showSnackBar(context, l.message),
+      (r) => null,
+    );
+  }
+
   Future<void> _shareTextTweet({
     required String text,
     required BuildContext context,
