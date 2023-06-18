@@ -6,7 +6,7 @@ import 'package:twitter_clone/models/tweet_model.dart';
 
 class TweetCard extends ConsumerWidget {
   final Tweet tweet;
-  const TweetCard(this.tweet, {super.key});
+  const TweetCard({required this.tweet, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,7 +21,32 @@ class TweetCard extends ConsumerWidget {
                       radius: 35,
                       backgroundImage: NetworkImage(user.profilePic),
                     ),
-                  ),Column(children: [],)
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(right: 5),
+                            child: Text(
+                              user.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 19,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            "@${user.name}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ],
