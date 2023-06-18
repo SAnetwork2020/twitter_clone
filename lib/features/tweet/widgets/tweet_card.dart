@@ -2,9 +2,11 @@ import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/common/common.dart';
+import 'package:twitter_clone/constants/constants.dart';
 import 'package:twitter_clone/core/enums/tweet_type_enum.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
-import 'package:twitter_clone/models/hashtag_text.dart';
+import 'package:twitter_clone/features/tweet/widgets/hashtag_text.dart';
+import 'package:twitter_clone/features/tweet/widgets/tweet_icon_button.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 import 'package:twitter_clone/theme/theme.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -68,8 +70,44 @@ class TweetCard extends ConsumerWidget {
                           const SizedBox(
                             height: 4,
                           ),
-                          AnyLinkPreview(link: "https://${tweet.link}"),
-                        ]
+                          AnyLinkPreview(
+                            link: "https://${tweet.link}",
+                            displayDirection: UIDirection.uiDirectionHorizontal,
+                          ),
+                        ],
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 10,
+                            right: 20,
+                          ),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TweetIconButton(
+                                  pathName: AssetsConstants.viewsIcon,
+                                  text: (tweet.commentIds.length +
+                                          tweet.reshareCount +
+                                          tweet.likes.length)
+                                      .toString(),
+                                  onTap: () {},
+                                ),
+                                TweetIconButton(
+                                  pathName: AssetsConstants.commentIcon,
+                                  text: tweet.commentIds.length.toString(),
+                                  onTap: () {},
+                                ),
+                                TweetIconButton(
+                                  pathName: AssetsConstants.retweetIcon,
+                                  text: tweet.reshareCount.toString(),
+                                  onTap: () {},
+                                ),
+                                TweetIconButton(
+                                  pathName: AssetsConstants.likeFilledIcon,
+                                  text: tweet.likes.length.toString(),
+                                  onTap: () {},
+                                ),
+                              ]),
+                        )
                       ],
                     ),
                   ),
