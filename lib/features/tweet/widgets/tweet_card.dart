@@ -81,37 +81,52 @@ class TweetCard extends ConsumerWidget {
                             right: 20,
                           ),
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TweetIconButton(
-                                  pathName: AssetsConstants.viewsIcon,
-                                  text: (tweet.commentIds.length +
-                                          tweet.reshareCount +
-                                          tweet.likes.length)
-                                      .toString(),
-                                  onTap: () {},
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TweetIconButton(
+                                pathName: AssetsConstants.viewsIcon,
+                                text: (tweet.commentIds.length +
+                                        tweet.reshareCount +
+                                        tweet.likes.length)
+                                    .toString(),
+                                onTap: () {},
+                              ),
+                              TweetIconButton(
+                                pathName: AssetsConstants.commentIcon,
+                                text: tweet.commentIds.length.toString(),
+                                onTap: () {},
+                              ),
+                              TweetIconButton(
+                                pathName: AssetsConstants.retweetIcon,
+                                text: tweet.reshareCount.toString(),
+                                onTap: () {},
+                              ),
+                              TweetIconButton(
+                                pathName: AssetsConstants.likeOutlinedIcon,
+                                text: tweet.likes.length.toString(),
+                                onTap: () {},
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.share_outlined,
+                                  size: 25,
+                                  color: Pallete.greyColor,
                                 ),
-                                TweetIconButton(
-                                  pathName: AssetsConstants.commentIcon,
-                                  text: tweet.commentIds.length.toString(),
-                                  onTap: () {},
-                                ),
-                                TweetIconButton(
-                                  pathName: AssetsConstants.retweetIcon,
-                                  text: tweet.reshareCount.toString(),
-                                  onTap: () {},
-                                ),
-                                TweetIconButton(
-                                  pathName: AssetsConstants.likeFilledIcon,
-                                  text: tweet.likes.length.toString(),
-                                  onTap: () {},
-                                ),
-                              ]),
-                        )
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 1,
+                        ),
                       ],
                     ),
                   ),
                 ],
+              ),
+              const Divider(
+                color: Pallete.greyColor,
               ),
             ],
           ),
